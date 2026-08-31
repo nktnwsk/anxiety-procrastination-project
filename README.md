@@ -1,14 +1,39 @@
-# Project 'Gender or History of Anxiety Disorder Diagnosis: Which Factors May Contribute to Procrastination Patterns in People with Anxiety?'
+# Procrastination Patterns in University Students: The Role of Gender & Anxiety Diagnosis
 
-# This project examines the association between procrastinatory behaviours and symptoms of anxiety among university students and then divides the overall sample by gender and history of anxiety diagnosis. 
-# The data were collected using an online questionnaire combining Penn State Worry Questionnaire (PSWQ) and Lay’s Procrastination Scale.
+This repository contains the full R data processing pipeline, psychometric reliability calculations, and visualisation scripts for an empirical study examining how worry-related anxiety symptoms relate to task procrastination among university students.
 
-# Research Question: Can increased levels of worry-related symptoms of anxiety be associated with greater levels of procrastination?
-# Sample: N = 56, adults aged 18-30
-# Measures: Penn State Worry Questionnaire (PSWQ) and Lay's Procrastination Scale
-# Main finding: r(54) = .37, p = .005 — moderately positively correlated
+> **Research Question:** Can higher levels of worry-related anxiety symptoms be associated with greater levels of behavioral procrastination?
 
-# Author's notice:
-# Visual representation of the statistical analyses, i.e. tables and figures in the paper (see .pdf file), was originally performed in 'jamovi'. This software works on the basis of R, and the present .rmd file is an adapted version of the same analyses.
-# Tables and figures presented in .pdf file differ from those that are shown after rendering this project's code visually and give only general representation of the statistical analyses.
-# Nevertheless, no mathematical discrepancies were detected as the results of calculations are accurate.
+---
+
+## Key Highlights & Findings
+
+* **Sample:** $N = 56$ adults (aged 18–30)
+* **Primary Result:** A statistically significant, moderate positive correlation between anxiety symptoms (PSWQ) and procrastination (Lay's Scale), $r(54) = .37, p = .005$.
+* **Demographics:** Sample divided by self-reported **gender** and **history of clinical anxiety diagnosis** to evaluate additional potential patterns.
+
+---
+
+## Measures & Method
+
+1. **Penn State Worry Questionnaire (PSWQ):** 16 items measuring uncontrollable worry.
+2. **Lay's Procrastination Scale:** 20 items measuring behavioural task delay.
+
+### Analytical Pipeline (R)
+* Programmatic Likert-item reverse scoring ($6 - X$).
+* Cronbach’s $\alpha$ internal consistency evaluation.
+* Pearson’s $r$ correlation testing.
+* Non-parametric LOESS curve estimation for subgroup visualizations.
+
+---
+
+## Repository Structure
+
+```text
+├── anxiety-procrastination.Rproj     # RStudio Project file
+├── data/
+│   └── APP.csv                       # Raw anonymised survey responses
+├── data-analysis-code.Rmd            # R Markdown pipeline & report
+├── index.html                        # Live rendered report
+├── README.md                         # This file; general repository documentation
+└── Research_Paper.pdf                # The original paper
