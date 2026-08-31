@@ -20,7 +20,7 @@ This repository contains the full R data processing pipeline, psychometric relia
 2. **Lay's Procrastination Scale:** 20 items measuring behavioural task delay.
 
 ### Analytical Pipeline (R)
-* Programmatic Likert-item reverse scoring ($6 - X$).
+* Reverse scoring for Likert-type scales ($6 - X$).
 * Cronbach’s $\alpha$ internal consistency evaluation.
 * Pearson’s $r$ correlation testing.
 * Non-parametric LOESS curve estimation for subgroup visualizations.
@@ -37,3 +37,9 @@ This repository contains the full R data processing pipeline, psychometric relia
 ├── index.html                        # Live rendered report
 ├── README.md                         # This file; general repository documentation
 └── Research_Paper.pdf                # The original paper
+```
+
+---
+
+## Author's Note on software usage:
+Originally, statistical analyses, tables, and figures, presented in the paper (.pdf), were generated in jamovi. Since jamovi runs on R, the .Rmd pipeline in this repository is set to reproduce identical statistical calculations directly in the native R (ggplot2, dplyr, knitr, etc). Visually, the style varies between jamovi outputs and the standard R render, yet all mathematical results remain correct and identical. 
