@@ -35,7 +35,7 @@ This repository contains the full R data processing pipeline, psychometric relia
 │   └── APP.csv                       # Raw anonymised survey responses
 ├── data-analysis-code.Rmd            # R Markdown pipeline & report
 ├── index.html                        # Live rendered report
-├── README.md                         # This file; general repository documentation
+├── README.md                         # General repository documentation
 └── Research_Paper.pdf                # The original paper
 ```
 

@@ -35,7 +35,7 @@ options(scipen = 999) # Avoid scientific notations
 
 # Part I. Importing and filtering the data
 
-```{r import_data, include=FALSE}
+```{r import_data}
 
 # The .csv is inside a 'data' folder within the project directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
@@ -49,7 +49,7 @@ lay_items  <- APP[, 23:42] # Q17 to Q36
 
 # Part II. Reversal
 
-```{r reversal, include=FALSE}
+```{r reversal}
 
 # Reverse scoring function for 1-5 Likert items
 reverse_score <- function(data, item_cols) {
@@ -65,7 +65,7 @@ lay_items_rev  <- reverse_score(lay_items, c(3, 4, 6, 8, 11, 13, 14, 15, 18, 20)
 
 # Part III. Descriptive statistics
 
-```{r descriptives, include=FALSE}
+```{r descriptives}
 
 # First step is to calculate the mean values for both questionnaires
 mean_values <- data.frame(
@@ -103,7 +103,7 @@ descriptives <- data.frame(
 
 # Part IV. Pearson's correlation
 
-```{r correlation, include=FALSE}
+```{r correlation}
 
 correlation_test <- cor.test(
   mean_values$anxiety_mean,
@@ -172,7 +172,7 @@ ggplot(mean_values, aes(x = anxiety_mean, y = procrastination_mean)) +
 
 # Part VI. Descriptive statistics by gender and history of anxiety diagnosis
 
-```{r subgroup_descriptives, include=FALSE}
+```{r subgroup_descriptives}
 
 # Additional hypotheses (H1 and H2) imply separating the overall sample first by gender, and second — by history of anxiety diagnosis
 

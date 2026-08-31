@@ -1598,15 +1598,76 @@ Diagnosis: Procrastination Patterns in People with Anxiety</h1>
 </div>
 <div id="part-i.-importing-and-filtering-the-data" class="section level1">
 <h1>Part I. Importing and filtering the data</h1>
+<pre class="r"><code># The .csv is inside a &#39;data&#39; folder within the project directory
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+APP &lt;- read.csv(file = &quot;data/APP.csv&quot;, header = TRUE)
+
+# Separate the scale results according to the column numbering
+pswq_items &lt;- APP[, 7:22] # Q1 to Q16
+lay_items  &lt;- APP[, 23:42] # Q17 to Q36</code></pre>
 </div>
 <div id="part-ii.-reversal" class="section level1">
 <h1>Part II. Reversal</h1>
+<pre class="r"><code># Reverse scoring function for 1-5 Likert items
+reverse_score &lt;- function(data, item_cols) {
+  data %&gt;%
+    mutate(across(all_of(item_cols), ~ 6 - .x))
+}
+
+# Match reverse-keyed items to the paper appendix
+pswq_items_rev &lt;- reverse_score(pswq_items, c(1, 3, 8, 10, 11))
+lay_items_rev  &lt;- reverse_score(lay_items, c(3, 4, 6, 8, 11, 13, 14, 15, 18, 20))</code></pre>
 </div>
 <div id="part-iii.-descriptive-statistics" class="section level1">
 <h1>Part III. Descriptive statistics</h1>
+<pre class="r"><code># First step is to calculate the mean values for both questionnaires
+mean_values &lt;- data.frame(
+  participant_id = seq_len(nrow(APP)),
+  age = APP[[3]],
+  gender = APP[[4]],
+  education = APP[[5]],
+  anxiety_diagnosis = APP[[6]],
+  anxiety_mean = rowMeans(pswq_items_rev),
+  procrastination_mean = rowMeans(lay_items_rev)
+)
+
+# Setting the formula to compute Cronbach&#39;s alpha
+cronbach_alpha &lt;- function(items) {
+  k &lt;- ncol(items)
+  k / (k - 1) * (1 - sum(vapply(items, var, numeric(1))) / var(rowSums(items)))
+}
+
+# The data set is now ready to present the descriptive statistics
+descriptives &lt;- data.frame(
+  scale = c(&quot;PSWQ&quot;, &quot;Lay&#39;s Procrastination Scale&quot;),
+  n = c(nrow(mean_values), nrow(mean_values)), # Sample size
+  cronbach_alpha = c(
+    cronbach_alpha(pswq_items_rev),
+    cronbach_alpha(lay_items_rev)
+  ),
+  mean = c(mean(mean_values$anxiety_mean), mean(mean_values$procrastination_mean)),
+  median = c(median(mean_values$anxiety_mean), median(mean_values$procrastination_mean)),
+  sd = c(sd(mean_values$anxiety_mean), sd(mean_values$procrastination_mean)), # Standard deviation
+  minimum = c(min(mean_values$anxiety_mean), min(mean_values$procrastination_mean)),
+  maximum = c(max(mean_values$anxiety_mean), max(mean_values$procrastination_mean))
+)</code></pre>
 </div>
 <div id="part-iv.-pearsons-correlation" class="section level1">
 <h1>Part IV. Pearson’s correlation</h1>
+<pre class="r"><code>correlation_test &lt;- cor.test(
+  mean_values$anxiety_mean,
+  mean_values$procrastination_mean,
+  method = &quot;pearson&quot;
+)
+
+# The results of Person&#39;s correlation analysis, previously presented in form of the list, may now be demonstrated in a table.
+correlation_result &lt;- data.frame(
+  Relationship = &quot;PSWQ vs. Procrastination&quot;,
+  r = unname(correlation_test$estimate), # Pearson&#39;s r
+  df = unname(correlation_test$parameter), # Degrees of freedom
+  p_value = correlation_test$p.value, # p-value
+  n = nrow(mean_values)
+)</code></pre>
 </div>
 <div id="part-v.-visualising-the-results" class="section level1">
 <h1>Part V. Visualising the results</h1>
@@ -1692,6 +1753,47 @@ scales.</h2>
 <div id="part-vi.-descriptive-statistics-by-gender-and-history-of-anxiety-diagnosis" class="section level1">
 <h1>Part VI. Descriptive statistics by gender and history of anxiety
 diagnosis</h1>
+<pre class="r"><code># Additional hypotheses (H1 and H2) imply separating the overall sample first by gender, and second — by history of anxiety diagnosis
+
+# Gender is available for all 56 participants
+gender_descriptives &lt;- mean_values %&gt;%
+  group_by(gender) %&gt;%
+  summarise(
+    n = n(),
+    PSWQ_M = mean(anxiety_mean),
+    PSWQ_Med = median(anxiety_mean),
+    PSWQ_SD = sd(anxiety_mean),
+    PSWQ_min = min(anxiety_mean),
+    PSWQ_max = max(anxiety_mean),
+    Proc_M = mean(procrastination_mean),
+    Proc_Med = median(procrastination_mean),
+    Proc_SD = sd(procrastination_mean),
+    Proc_min = min(procrastination_mean),
+    Proc_max = max(procrastination_mean),
+    .groups = &quot;drop&quot;
+  )
+
+# One participant selected &quot;Prefer not to say&quot; for diagnostic history. This response cannot be assigned to either comparison group, so it is excluded from this subgroup analysis.
+diagnosis_descriptives &lt;- mean_values %&gt;%
+  filter(anxiety_diagnosis %in% c(&quot;Yes&quot;, &quot;No&quot;)) %&gt;%
+  group_by(anxiety_diagnosis) %&gt;%
+  summarise(
+    n = n(),
+    PSWQ_M = mean(anxiety_mean),
+    PSWQ_Med = median(anxiety_mean),
+    PSWQ_SD = sd(anxiety_mean),
+    PSWQ_min = min(anxiety_mean),
+    PSWQ_max = max(anxiety_mean),
+    Proc_M = mean(procrastination_mean),
+    Proc_Med = median(procrastination_mean),
+    Proc_SD = sd(procrastination_mean),
+    Proc_min = min(procrastination_mean),
+    Proc_max = max(procrastination_mean),
+    .groups = &quot;drop&quot;
+  )
+
+diagnosis_data &lt;- mean_values %&gt;%
+  filter(anxiety_diagnosis %in% c(&quot;Yes&quot;, &quot;No&quot;))</code></pre>
 </div>
 <div id="part-vii.-visualising-the-separated-results" class="section level1">
 <h1>Part VII. Visualising the separated results</h1>
