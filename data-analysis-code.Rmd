@@ -51,7 +51,7 @@ lay_items  <- APP[, 23:42] # Q17 to Q36
 
 ```{r reversal}
 
-# Reverse scoring function for 1-5 Likert items
+# Reverse score function for 1-5 Likert items
 reverse_score <- function(data, item_cols) {
   data %>%
     mutate(across(all_of(item_cols), ~ 6 - .x))
@@ -67,7 +67,7 @@ lay_items_rev  <- reverse_score(lay_items, c(3, 4, 6, 8, 11, 13, 14, 15, 18, 20)
 
 ```{r descriptives}
 
-# First step is to calculate the mean values for both questionnaires
+# Calculate the mean values for both questionnaires
 mean_values <- data.frame(
   participant_id = seq_len(nrow(APP)),
   age = APP[[3]],
@@ -78,7 +78,7 @@ mean_values <- data.frame(
   procrastination_mean = rowMeans(lay_items_rev)
 )
 
-# Setting the formula to compute Cronbach's alpha
+# Set the formula to compute Cronbach's alpha
 cronbach_alpha <- function(items) {
   k <- ncol(items)
   k / (k - 1) * (1 - sum(vapply(items, var, numeric(1))) / var(rowSums(items)))
@@ -111,7 +111,7 @@ correlation_test <- cor.test(
   method = "pearson"
 )
 
-# The results of Person's correlation analysis, previously presented in form of the list, may now be demonstrated in a table.
+# The results of Person's correlation analysis, previously presented in form of the list, may now be demonstrated in a table
 correlation_result <- data.frame(
   Relationship = "PSWQ vs. Procrastination",
   r = unname(correlation_test$estimate), # Pearson's r
@@ -194,7 +194,7 @@ gender_descriptives <- mean_values %>%
     .groups = "drop"
   )
 
-# One participant selected "Prefer not to say" for diagnostic history. This response cannot be assigned to either comparison group, so it is excluded from this subgroup analysis.
+# One participant selected "Prefer not to say" for diagnostic history. This response cannot be assigned to either comparison group, so it is excluded from this subgroup analysis
 diagnosis_descriptives <- mean_values %>%
   filter(anxiety_diagnosis %in% c("Yes", "No")) %>%
   group_by(anxiety_diagnosis) %>%
