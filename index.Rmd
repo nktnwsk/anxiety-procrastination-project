@@ -8,11 +8,12 @@ output:
     toc_float: true
     theme: flatly
     code_folding: show
+    output_file: "index.html"
 ---
 
 # Part 0. First setup
 
-```{r setup, include=FALSE}
+```{r setup, message=FALSE, warning=FALSE}
 
 # Load libraries
 library(rmarkdown)
@@ -35,7 +36,7 @@ options(scipen = 999) # Avoid scientific notations
 
 # Part I. Importing and filtering the data
 
-```{r import_data}
+```{r import_data, message=FALSE}
 
 # The .csv is inside a 'data' folder within the project directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
@@ -49,7 +50,7 @@ lay_items  <- APP[, 23:42] # Q17 to Q36
 
 # Part II. Reversal
 
-```{r reversal}
+```{r reversal, message=FALSE}
 
 # Reverse score function for 1-5 Likert items
 reverse_score <- function(data, item_cols) {
@@ -65,7 +66,7 @@ lay_items_rev  <- reverse_score(lay_items, c(3, 4, 6, 8, 11, 13, 14, 15, 18, 20)
 
 # Part III. Descriptive statistics
 
-```{r descriptives}
+```{r descriptives, message=FALSE}
 
 # Calculate the mean values for both questionnaires
 mean_values <- data.frame(
@@ -103,7 +104,7 @@ descriptives <- data.frame(
 
 # Part IV. Pearson's correlation
 
-```{r correlation}
+```{r correlation, message=FALSE}
 
 correlation_test <- cor.test(
   mean_values$anxiety_mean,
@@ -150,7 +151,7 @@ knitr::kable(
 
 ```{r visuals_sp_cor, echo=FALSE, message=FALSE}
 
-ggplot(mean_values, aes(x = anxiety_mean, y = procrastination_mean)) +
+f1 <- ggplot(mean_values, aes(x = anxiety_mean, y = procrastination_mean)) +
   geom_point(size = 2, alpha = 0.75, colour = "#2C6E9F") +
   geom_smooth(method = "loess", se = TRUE, alpha = 0.15) +
   labs(
@@ -168,11 +169,13 @@ ggplot(mean_values, aes(x = anxiety_mean, y = procrastination_mean)) +
     panel.grid.minor = element_blank()
   )
 
+f1 # Make the plot visible and rendered
+
 ```
 
 # Part VI. Descriptive statistics by gender and history of anxiety diagnosis
 
-```{r subgroup_descriptives}
+```{r subgroup_descriptives, message=FALSE}
 
 # Additional hypotheses (H1 and H2) imply separating the overall sample first by gender, and second — by history of anxiety diagnosis
 
@@ -222,7 +225,7 @@ diagnosis_data <- mean_values %>%
 
 ## VII.a. Table 3. Descriptive statistics divided by gender.
 
-```{r gender_table, echo=FALSE}
+```{r gender_table, echo=FALSE, message=FALSE}
 
 knitr::kable(
   gender_descriptives,
@@ -235,7 +238,7 @@ knitr::kable(
 
 ```{r gender_scatter, echo=FALSE, message=FALSE, fig.width=7, fig.height=5}
 
-ggplot(mean_values, aes(x = anxiety_mean, y = procrastination_mean)) +
+f2 <- ggplot(mean_values, aes(x = anxiety_mean, y = procrastination_mean)) +
   geom_point(aes(colour = gender), size = 2, alpha = 0.8) +
   geom_smooth(method = "loess", se = TRUE, alpha = 0.15) +
   labs(
@@ -250,11 +253,13 @@ ggplot(mean_values, aes(x = anxiety_mean, y = procrastination_mean)) +
     panel.grid.minor = element_blank()
   )
 
+f2
+
 ```
 
 ## VII.c. Table 4. Descriptive statistics divided by history of anxiety diagnosis.
 
-```{r diagnosis_table, echo=FALSE}
+```{r diagnosis_table, echo=FALSE, message=FALSE}
 
 knitr::kable(
   diagnosis_descriptives,
@@ -268,7 +273,7 @@ knitr::kable(
 
 ```{r diagnosis_scatter, echo=FALSE, message=FALSE, fig.width=7, fig.height=5}
 
-ggplot(diagnosis_data, aes(x = anxiety_mean, y = procrastination_mean)) +
+f3 <- ggplot(diagnosis_data, aes(x = anxiety_mean, y = procrastination_mean)) +
   geom_point(aes(colour = anxiety_diagnosis), size = 2.3, alpha = 0.8) +
   geom_smooth(method = "loess", se = TRUE, alpha = 0.15) +
   labs(
@@ -282,5 +287,29 @@ ggplot(diagnosis_data, aes(x = anxiety_mean, y = procrastination_mean)) +
     plot.title = element_text(face = "bold"),
     panel.grid.minor = element_blank()
   )
+
+f3
+
+```
+
+# Part VIII. Saving processed data
+```{r saving, message=FALSE, warning=FALSE}
+
+# Save all tables as .csv files in 'data' folder
+write.csv(mean_values, file.path("data", "mean_values.csv"), row.names = FALSE)
+
+# Files below are named according to the tables' numbering in the original manuscript
+write.csv(descriptives, file.path("data", "table_1.csv"), row.names = FALSE)
+write.csv(correlation_result, file.path("data", "table_2.csv"), row.names = FALSE)
+write.csv(gender_descriptives, file.path("data", "table_3.csv"), row.names = FALSE)
+write.csv(diagnosis_descriptives, file.path("data", "table_4.csv"), row.names = FALSE)
+
+# Create 'figures' folder and save the scatter plots with visualised data
+dir.create("figures_r")
+
+# Files below are named according to the figures' numbering in the original manuscript
+ggsave("figures_r/figure_1.png", plot = f1, width = 7, height = 5, dpi = 300)
+ggsave("figures_r/figure_2.png", plot = f2, width = 7, height = 5, dpi = 300)
+ggsave("figures_r/figure_3.png", plot = f3, width = 7, height = 5, dpi = 300)
 
 ```

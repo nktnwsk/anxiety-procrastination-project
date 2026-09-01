@@ -30,13 +30,35 @@ This repository contains the full R data processing pipeline, psychometric relia
 ## Repository Structure
 
 ```text
-├── anxiety-procrastination.Rproj     # RStudio Project file
+anxiety_procrastination_project/
+├── anxiety_procrastination.Rproj   # RStudio Project file
 ├── data/
-│   └── APP.csv                       # Raw anonymised survey responses
-├── data-analysis-code.Rmd            # R Markdown pipeline & report
-├── index.html                        # Live rendered report
-├── README.md                         # General repository documentation
-└── Research_Paper.pdf                # The original paper
+│   ├── APP.csv                     # Raw anonymised survey responses
+│   ├── mean_values.csv             # Tables with processed data
+│   ├── table_1.csv
+│   ├── table_2.csv
+│   ├── table_3.csv
+│   └── table_4.csv
+├── figures_r/
+│   ├── figure_1.png                # Figures created with R
+│   ├── figure_2.png
+│   └── figure_3.png
+├── index.Rmd                       # R Markdown pipeline & report
+├── index.html                      # Live rendered report
+├── jamovi/                         
+│   ├── jamovi_analysis.omv         # Original jamovi analysis
+│   └── tables_figures_jamovi/      
+│       ├── figure_1_j.png          # Tables and figures used in the original paper
+│       ├── figure_1_j.png
+│       ├── figure_1_j.png
+│       ├── table_1_j.png
+│       ├── table_2_j.png
+│       ├── table_3_j.png
+│       └── table_4_j.png
+├── paper/
+│   ├── AI_Declaration.pdf          # Signed declaration of AI usage
+│   └── Research_Paper.pdf          # The original paper
+└── README.md                       # General repository documentation
 ```
 
 ---
